@@ -1,1 +1,1 @@
-int variable = 6; 
+int variable = 7; 
