@@ -7,7 +7,7 @@ from shapely.geometry import Point
 class API:
     def __init__(self):
         self.endpoint = ['mq_01', 'mq_02', 'mq_03', 'mq_04', 'mq_05', 'mq_06', 'mq_07', 'mq_08', 'mq_09']
-        self.intialValues = [84.9, 84.23, 92.17, 10.65, 81.98, 43.54, 85.76, 91.45, 849.87]
+        self.intialValues = [100.9, 500.23, 12, 1000, 200, 1200, 800, 33, 0]
         self.url = 'http://192.168.101.162/'
         
     

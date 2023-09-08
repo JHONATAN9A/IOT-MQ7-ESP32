@@ -16,14 +16,14 @@ import geopandas as gpd
 app = dash.Dash(__name__)
 
 get_data = API()
-grilla = get_data.create_grilla(4.344199, -74.3747695, 0.01)
+grilla = get_data.create_grilla(4.335813, -74.371066, 0.001)
 
 get_img = interpolation()
 get_img.calculate_region(grilla, 0.1)
 
 
 image_url = ""
-image_bounds = [[4.329199, -74.3797695], [4.349199, -74.3597695]]
+image_bounds = [[4.334313, -74.371566], [4.336313, -74.369566]]
 
 
 initial_data = {row['sensor']: [row['valor']] for _, row in  grilla.iterrows()}
@@ -36,10 +36,10 @@ app.layout = html.Div([
             dl.TileLayer(),
             dl.ImageOverlay(id='image-overlay', url=image_url, opacity=0.7, bounds=image_bounds)
         ],
-        center=(4.344199, -74.3747695),
-        zoom=15,
+        center=(4.335813, -74.371066),
+        zoom=22,
         style={'width': '100%', 'height': '99vh'})
-    ], style={'width': '50%', 'display': 'inline-block', 'vertical-align': 'top'}),
+    ], style={'width': '40%', 'display': 'inline-block', 'vertical-align': 'top'}),
     
     html.Div([
         dcc.Graph(id='line-graph',
@@ -49,7 +49,7 @@ app.layout = html.Div([
             interval=1000,
             n_intervals=0
         )
-    ], style={'width': '50%', 'display': 'inline-block', 'vertical-align': 'top'})
+    ], style={'width': '59%', 'display': 'inline-block', 'vertical-align': 'top'})
 ])
 
 
