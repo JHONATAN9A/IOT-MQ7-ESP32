@@ -1,0 +1,16 @@
+body {
+    font-family: sans-serif;
+    background-color: #218a6e9c  ;
+    background-image: url('/assets/logo1.png');
+    background-size: 30%;
+    background-repeat: no-repeat;
+    background-position: 50% 20vh;
+
+}
+
+.header-item{
+    color: aliceblue !important;
+}
+.header-item:hover {
+    color:   #1fd8d4  !important;
+}
