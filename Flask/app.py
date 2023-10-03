@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 # Token válido
 valid_token = os.environ.get('TOKEN')
+DEBUG = bool(os.environ.get('ENV')) 
 
 # Validar Token
 def validate_sesion(f):
@@ -60,6 +61,9 @@ def home():
 
 
 
-
+print(DEBUG)
 if __name__ == '__main__':
-    app.run(debug=bool(os.environ.get('ENV')))
+    if DEBUG == True:
+        app.run(debug=True)
+    else:
+        app.run(debug=False)

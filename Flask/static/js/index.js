@@ -1,4 +1,35 @@
-document.addEventListener("DOMContentLoaded", function () {
+
+const URL_API = 'http://54.175.85.224:8080/'
+//const URL_API = 'http://127.0.0.1:5000/'
+let VALUES_GRAFICA = []
+let GRAFICAS_NOW = true;
+
+window.onload = function() {
+    Create_Map()
+
+    document.getElementById("grafica-now").addEventListener("click", function() {
+        let mapDiv = document.getElementById("map");
+        var graficas = document.getElementById("con-graficas");
+        mapDiv.style.height = "50vh";
+        graficas.classList.remove("d-none");
+
+        if(GRAFICAS_NOW){
+            GRAFICAS_NOW = false;
+            Create_Grafica("sensorChart1", 'Sensor 1', '#002946', 0)
+            Create_Grafica("sensorChart2", 'Sensor 2', '#002946', 1)
+            Create_Grafica("sensorChart3", 'Sensor 3', '#002946', 2)
+        }
+        
+        
+    });
+};
+
+function getCookie(name='token') {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
+}
+
+function Create_Map(){
     const map = new maplibregl.Map({
         container: 'map',
         // Use a minimalist raster style
@@ -10,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             'sources': {
                 'raster-tiles': {
                     'type': 'raster',
-                    'tiles': ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                    'tiles': ['http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}&s=Ga'],
                     'tileSize': 256,
                     'minzoom': 0,
                     'maxzoom': 19
@@ -137,7 +168,66 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-      
+}
 
+
+function Create_Grafica(id, sensor, color, index){
+    let ctx = document.getElementById(id).getContext('2d');
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: sensor,
+                    data: [],
+                    borderColor: color,
+                    fill: false,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        },
+    });
+
+    function addDataToChart(label, value, datasetIndex) {
+        
+        chart.data.labels.push(label);
+        console.log(chart.data.labels)
+        chart.data.datasets[datasetIndex].data.push(value);
+        chart.update();
+    }
+
+    function fetchDataAndUpdateChart() {
+        const token = getCookie('token');
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        };
+        fetch(URL_API+'last_registro_co',{
+            method: 'GET',
+            headers: headers
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!(VALUES_GRAFICA.includes(data.id))) {
+                if(data.codigo == index){
+                    const hora = new Date(`2000-01-01T${data.hora}Z`);
+                    const timestamp = hora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    const value = data.valor;
+                    addDataToChart(timestamp, value, 0);
+                    VALUES_GRAFICA.push(data.id)
+                } 
+            }
+            
+        })
+        .catch(error => console.error('Error al obtener datos: ', error));
+    }
+
+    setInterval(() => {
+        fetchDataAndUpdateChart();
+    }, 1000);
+
+}
     
-});
