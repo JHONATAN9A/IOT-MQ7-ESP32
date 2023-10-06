@@ -195,7 +195,6 @@ function Create_Grafica(id, sensor, color, index){
     function addDataToChart(label, value, datasetIndex) {
         
         chart.data.labels.push(label);
-        console.log(chart.data.labels)
         chart.data.datasets[datasetIndex].data.push(value);
         chart.update();
     }
@@ -213,10 +212,9 @@ function Create_Grafica(id, sensor, color, index){
         .then(data => {
             if (!(VALUES_GRAFICA.includes(data.id))) {
                 if(data.codigo == index){
-                    const hora = new Date(`2000-01-01T${data.hora}Z`);
-                    const timestamp = hora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    console.log(data)
                     const value = data.valor;
-                    addDataToChart(timestamp, value, 0);
+                    addDataToChart(data.hora, value, 0);
                     VALUES_GRAFICA.push(data.id)
                 } 
             }
