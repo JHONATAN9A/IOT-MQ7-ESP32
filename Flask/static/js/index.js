@@ -1,5 +1,5 @@
 
-const URL_API = 'http://54.175.85.224:8080/'
+const URL_API = ' http://127.0.0.1:5000/'
 //const URL_API = 'http://127.0.0.1:5000/'
 let VALUES_GRAFICA = []
 let GRAFICAS_NOW = true;

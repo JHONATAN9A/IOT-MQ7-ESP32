@@ -35,7 +35,7 @@ def save_regitro_co():
 
     try:
         with get_db_connection() as conn, conn.cursor() as cursor:
-            cursor.execute("INSERT INTO mq7.registros (sensor, hora, fecha, valor, usuario, codigo, prueba) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            cursor.execute("INSERT INTO mq7."+data['sensor']+"(sensor, hora, fecha, valor, usuario, codigo, prueba) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                            (data['sensor'], data['hora'], data['fecha'], data['valor'], data['usuario'], data['codigo'], data['prueba']))
             conn.commit()
             return jsonify({'message': 'Datos guardados exitosamente'}), 201
