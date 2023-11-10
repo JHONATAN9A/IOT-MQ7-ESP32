@@ -1,6 +1,6 @@
 
-const URL_API = ' http://127.0.0.1:5000/'
-//const URL_API = 'http://127.0.0.1:5000/'
+//const URL_API = ' http://127.0.0.1:5000/'
+const URL_API = 'http://18.226.17.126:8000/'
 
 
 let VALUES_GRAFICA = []
