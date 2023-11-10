@@ -5,7 +5,7 @@ load_dotenv()
 from flask import Flask, render_template, redirect, request, url_for
 from functools import wraps
 
-from api import save_regitro_co, get_last_registro_co
+from api import save_regitro_co, get_last_registro_co, get_matriz_registro_co
 
 
 app = Flask(__name__)
@@ -49,9 +49,14 @@ def save_data():
     return save_regitro_co()
 
 
-@app.route('/last_registro_co', methods=['GET'])
+@app.route('/get_registro_co', methods=['GET'])
 def get_last_data():
     return get_last_registro_co()
+
+
+@app.route('/get_matriz_co', methods=['GET'])
+def get_matriz_co():
+    return get_matriz_registro_co()
 
 
 @app.route('/home')

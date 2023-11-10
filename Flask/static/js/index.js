@@ -1,6 +1,8 @@
 
 const URL_API = ' http://127.0.0.1:5000/'
 //const URL_API = 'http://127.0.0.1:5000/'
+
+
 let VALUES_GRAFICA = []
 let GRAFICAS_NOW = true;
 
@@ -15,19 +17,167 @@ window.onload = function() {
 
         if(GRAFICAS_NOW){
             GRAFICAS_NOW = false;
-            Create_Grafica("sensorChart1", 'Sensor 1', '#002946', 0)
-            Create_Grafica("sensorChart2", 'Sensor 2', '#002946', 1)
-            Create_Grafica("sensorChart3", 'Sensor 3', '#002946', 2)
-        }
-        
-        
+            Create_Grafica("sensorChart1", 'Sensor 1', '#002946', 0, 'mq7_sensor01')
+            Create_Grafica("sensorChart2", 'Sensor 2', '#002946', 1, 'mq7_sensor02')
+            Create_Grafica("sensorChart3", 'Sensor 3', '#002946', 2, 'mq7_sensor03')
+        } 
     });
+    document.getElementById("grafica-week").addEventListener("click", function() {
+        console.log("grafica-week")
+        $('.modal').modal('show')
+        $('.spinner-container').toggleClass('d-none');
+        
+        const token = getCookie('token');
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        };
+        fetch(URL_API+'get_matriz_co',{
+            method: 'GET',
+            headers: headers
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('.spinner-container').toggleClass('d-none');
+            Create_Matriz_Week(data.data)
+            console.log(data)
+            
+        })
+        .catch(error => console.error('Error al obtener datos: ', error));
+    });
+    document.getElementById("close-modal").addEventListener("click", function() {
+        $('.modal').modal('hide')
+    });
+
+
 };
 
 function getCookie(name='token') {
     const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
 }
+
+function Create_Matriz_Week(datos_matriz) {
+    let style =()=>{
+        let style = [
+            {
+                "rule": "%v == 0", 
+                "background-color": "#c3ccd8" 
+            },
+            {
+                "rule": "%v > 0 && %v <= 500", 
+                "background-color": "#2980B9" 
+            },
+            {
+                "rule": "%v > 500 && %v <= 900", 
+                "background-color": "#2471A3" 
+            },
+            {
+                "rule": "%v > 900 && %v <= 1300", 
+                "background-color": "#1F618D" 
+            },
+            {
+                "rule": "%v > 1300 && %v <= 1700", 
+                "background-color": "#1A5276" 
+            },
+            {
+                "rule": "%v > 1700", 
+                "background-color": "#154360" 
+            }
+        ]
+
+        return style;
+    }
+    
+
+    var myConfig = {
+        "type": "heatmap",
+        "plotarea": {
+            "margin": "dynamic"
+        },
+        "scale-x": {
+            "labels": ["7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM"]
+        },
+        "scale-y": {
+            "labels": ["MQ1-Lunes", "MQ2-Lunes", "MQ3-Lunes", "MQ1-Martes", "MQ2-Martes", "MQ3-Martes", "MQ1-Miercoles", "MQ2-Miercoles", "MQ3-Miercoles", "MQ1-Jueves", "MQ2-Jueves", "MQ3-Jueves", "MQ1-Viernes", "MQ2-Viernes", "MQ3-Viernes"],
+            "item": {
+                "wrap-text": true, 
+            },
+            "max-items": 15,
+            
+        },
+        "series": [{
+                "values": datos_matriz['LunesMQ1'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['LunesMQ2'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['LunesMQ3'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MartesMQ1'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MartesMQ2'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MartesMQ3'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MiercolesMQ1'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MiercolesMQ2'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['MiercolesMQ3'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['JuevesMQ1'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['JuevesMQ2'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['JuevesMQ3'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['ViernesMQ1'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['ViernesMQ2'],
+                "rules": style(),
+            },
+            {
+                "values": datos_matriz['ViernesMQ3'],
+                "rules": style(),
+            }
+        ],
+        
+    };
+
+    // Renderizar el gráfico de calor en un elemento con el ID "matrizWeek"
+    zingchart.render({
+        id: 'matrizWeek',
+        data: myConfig,
+        height: '800',
+        width: '100%'
+    });
+}
+
 
 function Create_Map(){
     const map = new maplibregl.Map({
@@ -171,7 +321,7 @@ function Create_Map(){
 }
 
 
-function Create_Grafica(id, sensor, color, index){
+function Create_Grafica(id, sensor, color, index, dbsensor){
     let ctx = document.getElementById(id).getContext('2d');
     let chart = new Chart(ctx, {
         type: 'line',
@@ -189,8 +339,21 @@ function Create_Grafica(id, sensor, color, index){
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true, 
+                    min: 0,   
+                    max: 2100, 
+                    title: {
+                        display: true,
+                        text: 'ppm',
+                    },
+                },
+            },
         },
     });
+
+    VALUES_GRAFICA[sensor] = [];
 
     function addDataToChart(label, value, datasetIndex) {
         
@@ -204,19 +367,16 @@ function Create_Grafica(id, sensor, color, index){
         const headers = {
             'Authorization': `Bearer ${token}`
         };
-        fetch(URL_API+'last_registro_co',{
+        fetch(URL_API+'get_registro_co?sensor=' + dbsensor,{
             method: 'GET',
             headers: headers
         })
         .then(response => response.json())
         .then(data => {
-            if (!(VALUES_GRAFICA.includes(data.id))) {
-                if(data.codigo == index){
-                    console.log(data)
-                    const value = data.valor;
-                    addDataToChart(data.hora, value, 0);
-                    VALUES_GRAFICA.push(data.id)
-                } 
+            if (!(VALUES_GRAFICA[sensor].includes(data.id))) {
+                const value = data.valor;
+                addDataToChart(data.hora, value, 0);
+                VALUES_GRAFICA[sensor].push(data.id) 
             }
             
         })
