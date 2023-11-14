@@ -1,10 +1,16 @@
 
-//const URL_API = ' http://127.0.0.1:5000/'
-const URL_API = 'http://18.226.17.126:8000/'
+//const URL_API = 'http://127.0.0.1:5000/'
+const URL_API = 'http://18.191.202.133:8000/'
 
 
 let VALUES_GRAFICA = []
 let GRAFICAS_NOW = true;
+
+
+function getCookie(name='token') {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
+}
 
 window.onload = function() {
     Create_Map()
@@ -23,9 +29,9 @@ window.onload = function() {
         } 
     });
     document.getElementById("grafica-week").addEventListener("click", function() {
-        console.log("grafica-week")
-        $('.modal').modal('show')
-        $('.spinner-container').toggleClass('d-none');
+        $('.bd-example-modal-lg').modal('show')
+        let modalTitle = $('.modal').find('.modal-title');
+        modalTitle.text('Historico Semanal (6-11-2023 al 10-11-2023)');
         
         const token = getCookie('token');
         const headers = {
@@ -37,24 +43,210 @@ window.onload = function() {
         })
         .then(response => response.json())
         .then(data => {
-            $('.spinner-container').toggleClass('d-none');
             Create_Matriz_Week(data.data)
-            console.log(data)
             
         })
         .catch(error => console.error('Error al obtener datos: ', error));
     });
-    document.getElementById("close-modal").addEventListener("click", function() {
-        $('.modal').modal('hide')
-    });
 
+    document.getElementById("grafica-matriz-second").addEventListener("click", function() {
+        $('.bd-example-modal-lg-two').modal('show')
+        let modalTitle = $('.modal').find('.modal-title');
+        modalTitle.text('Matriz Temporal');
+
+        Create_Matriz_now('', false);
+
+        function obtenerYCrearMatriz() {
+            const token = getCookie('token');
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            };
+        
+            fetch(URL_API+'get_matriz_one_co',{
+                method: 'GET',
+                headers: headers
+            })
+            .then(response => response.json())
+            .then(data => {
+                let sensore = data.data;
+                Create_Matriz_now(sensore, true);
+                
+            })
+            .catch(error => console.error('Error al obtener datos: ', error));
+        }
+
+        setInterval(obtenerYCrearMatriz, 500);  
+    });
+    
+    let closeButtons = document.querySelectorAll("#close-modal");
+
+    closeButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            $('.bd-example-modal-lg').modal('hide');
+            $('.bd-example-modal-lg-two').modal('hide');
+        });
+    });
 
 };
 
-function getCookie(name='token') {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
+let myConfig;
+function Create_Matriz_now(datos_matriz, updates_matriz) {
+    if (!updates_matriz) {
+        myConfig = {
+            "graphset": [{
+                "type": 'piano',
+                "plotarea": {
+                    "margin": "dynamic"
+                },
+                "crosshair-x": {
+                    "visible": true
+                },
+                "plot": {
+                    "reference": "chart-max",
+                    "background-color": "white",
+                    "border-color": "#c3ccd8",
+                    "border-width": 1,
+                    "aspect": "none",
+                    "hover-state": {
+                        "visible": true,
+                        
+                    },
+                    "tooltip": {
+                        "visible": true,
+                        "text": "%data-custom-values",
+                        "font-size": 14
+                    },
+                },
+                "series": [{
+                        "values": [0],
+                        "data-custom-values": [0],
+                        "rules": [
+                            { "rule": "%v <= 300",             "background-color": "rgb(237, 244, 251)" },
+                            { "rule": "%v > 300 && %v <= 385", "background-color": "rgb(228, 238, 248)" },
+                            { "rule": "%v > 385 && %v <= 435", "background-color": "rgb(218, 232, 245)" },
+                            { "rule": "%v > 435 && %v <= 470", "background-color": "rgb(209, 226, 242)" },
+                            { "rule": "%v > 470 && %v <= 505", "background-color": "rgb(200, 220, 239)" },
+                            { "rule": "%v > 505 && %v <= 540", "background-color": "rgb(186, 214, 234)" },
+                            { "rule": "%v > 540 && %v <= 575", "background-color": "rgb(171, 207, 229)" },
+                            { "rule": "%v > 575 && %v <= 625", "background-color": "rgb(155, 200, 224)" },
+                            { "rule": "%v > 625 && %v <= 675", "background-color": "rgb(136, 190, 220)" },
+                            { "rule": "%v > 675 && %v <= 755", "background-color": "rgb(117, 179, 216)" },
+                            { "rule": "%v > 755 && %v <= 840", "background-color": "rgb(98, 168, 210)" },
+                            { "rule": "%v > 840 && %v <= 925", "background-color": "rgb(83, 157, 204)" },
+                            { "rule": "%v > 925 && %v <= 1010", "background-color": "rgb(67, 147, 198)" },
+                            { "rule": "%v > 1010 && %v <= 1095", "background-color": "rgb(55, 135, 192)" },
+                            { "rule": "%v > 1095 && %v <= 1180", "background-color": "rgb(42, 122, 185)" },
+                            { "rule": "%v > 1180 && %v <= 1265", "background-color": "rgb(30, 109, 178)" },
+                            { "rule": "%v > 1265 && %v <= 1350", "background-color": "rgb(20, 97, 168)" },
+                            { "rule": "%v > 1350 && %v <= 1435", "background-color": "rgb(11, 85, 159)" },
+                            { "rule": "%v > 1435 && %v <= 1745", "background-color": "rgb(8, 72, 143)" },
+                            { "rule": "%v > 1745 ", "background-color": "rgb(8, 60, 125)" },
+          
+                        ]
+                        
+                    },
+                ],
+                "scale-x": {
+                    "labels": [0],
+                    "placement": "opposite",
+                    "line-color": "#c3ccd8",
+                    "zooming": true,
+                    "max-labels": 24,
+                    "guide": {
+                        "visible": false
+                    },
+                    "tick": {
+                        "visible": false
+                    },
+                    "item": {
+                        "font-size": 14,
+                        "bold": true
+                    }
+                },
+                "scale-y": {
+                    "labels": ["MQ1", "MQ2", "MQ3"],
+                    "line-color": "#c3ccd8",
+                    "zooming": true,
+                    "mirrored": true,
+                    "guide": {
+                        "visible": false
+                    },
+                    "tick": {
+                        "visible": false
+                    },
+                    "item": {
+                        "font-size": 14,
+                        "bold": true
+                    }
+                }
+            }]
+        }
+
+        zingchart.render({
+            id: 'matrizOneSecond1',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+        zingchart.render({
+            id: 'matrizOneSecond2',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+        zingchart.render({
+            id: 'matrizOneSecond3',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+    } else {
+        myConfig.graphset[0].series.forEach((series, index) => {
+            series.values = datos_matriz["MQ1"];
+            series["data-custom-values"] = datos_matriz["MQ1"]
+        });
+        myConfig.graphset[0]["scale-x"].labels = datos_matriz["Time-MQ1"]
+        myConfig.graphset[0]["scale-y"].labels = ["MQ1"]
+
+        zingchart.render({
+            id: 'matrizOneSecond1',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+
+        myConfig.graphset[0].series.forEach((series, index) => {
+            series.values = datos_matriz["MQ2"];
+            series["data-custom-values"] = datos_matriz["MQ2"]
+        });
+        myConfig.graphset[0]["scale-x"].labels = datos_matriz["Time-MQ2"]
+        myConfig.graphset[0]["scale-y"].labels = ["MQ2"]
+
+        zingchart.render({
+            id: 'matrizOneSecond2',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+
+        myConfig.graphset[0].series.forEach((series, index) => {
+            series.values = datos_matriz["MQ3"];
+            series["data-custom-values"] = datos_matriz["MQ3"]
+        });
+        myConfig.graphset[0]["scale-x"].labels = datos_matriz["Time-MQ3"]
+        myConfig.graphset[0]["scale-y"].labels = ["MQ3"]
+
+        zingchart.render({
+            id: 'matrizOneSecond3',
+            data: myConfig,
+            height: '150',
+            width: '100%'
+        });
+    }
 }
+
+
+
 
 function Create_Matriz_Week(datos_matriz) {
     let style =()=>{

@@ -7,6 +7,8 @@ from datetime import time
 import pandas as pd
 
 
+semana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"]
+sensores = ["MQ1", "MQ2", "MQ3"]
 
 # Token válido
 valid_token = os.environ.get('TOKEN')
@@ -87,10 +89,9 @@ def get_last_registro_co():
         return jsonify({'message': 'Error al obtener el último registro', 'error': str(e)}), 500
 
 
-semana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"]
-sensores = ["MQ1", "MQ2", "MQ3"]
-matriz_sensores = {}
+
 # Obtener el total de registros de una semana
+matriz_sensores = {}
 def get_matriz_registro_co():
     token = request.headers.get('Authorization')
 
@@ -124,6 +125,35 @@ def get_matriz_registro_co():
                     return jsonify({'message': 'No se encontraron registros'}), 404
             
             return jsonify({'message': 'Ok', 'data': matriz_sensores}), 200
+
+    except Exception as e:
+        return jsonify({'message': 'Error al obtener los registros', 'error': str(e)}), 500
+
+
+# Obtener el total de registros de una semana    
+matriz_sensores_one_second = {}
+def get_matriz_registro_one_second_co():
+    token = request.headers.get('Authorization')
+
+    if token != f'Bearer {valid_token}':
+        return jsonify({'message': 'Token inválido'}), 401
+
+    try:
+        with get_db_connection() as conn, conn.cursor() as cursor:
+            for index, mq in enumerate(sensores):
+                cursor.execute(f"SELECT * FROM  mq7.mq7_sensor0{index+1}  ORDER BY id DESC LIMIT 1;")
+                records = cursor.fetchall()
+
+                if records:
+                    data = list(records[0])
+                    matriz_sensores_one_second[mq] = [float(data[4])]
+                    matriz_sensores_one_second['Time-'+mq] = [data[2]]
+                    print(data) 
+
+                else:
+                    return jsonify({'message': 'No se encontraron registros'}), 404
+
+            return jsonify({'message': 'Ok', 'data': matriz_sensores_one_second}), 200
 
     except Exception as e:
         return jsonify({'message': 'Error al obtener los registros', 'error': str(e)}), 500

@@ -15,24 +15,40 @@
 </head>
 <body>
     <div class="container-fluid">
+        <div class="dropdown" style="position: absolute; top: 20px; right: 20px; z-index:1000">
+            <img src="{{ url_for('static', filename='img/logo1.png') }}" alt="Logout" style="width: 70px; height: 70px; border-radius: 50%;">
+            <div class="dropdown-menu" aria-labelledby="logoutButton">
+                <a class="dropdown-item" href="#">Logout</a>
+                <!-- You can add additional options in the dropdown menu if needed -->
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12 col-md-3  sidebar">
-                <div class="d-flex flex-column align-items-center p-3 text-white">
-                    <div class="container-fluid d-flex justify-content-center align-items-center">
-                        <a href="">
-                            <img class="d-inline-block align-top" 
-                                 src="{{ url_for('static', filename='img/logo1.png') }}" 
-                                 width="100" 
-                                 height="100" 
-                                 style="border-radius: 10px">
-                        </a>
-                    </div>
+                <div class="d-flex flex-column align-items-center p-3 text-white cards-container" >
+                    
                     <ul class="nav nav-pills flex-column mb-auto" id="menu">
                         <li class="nav-item">
                             <div class="card_nav" id="grafica-now">
-                                <div class="card_image"> <img src="https://elearningindustry.com/wp-content/uploads/2022/03/shutterstock_1120845707.jpg" /> </div>
+                                <div class="card_image"> <img src="https://img.freepik.com/vetores-gratis/infografico-medico-tecnologia-futurista_23-2148486483.jpg?w=740&t=st=1699892999~exp=1699893599~hmac=33ed1c773f19965adfb6b28a4069607277b1629d9b99206051af5419a1e7da91" /> </div>
                                 <div class="card_title title-white">
-                                  <p>Time</p>
+                                    <p>Time <br>Graph</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="card_nav" id="grafica-matriz-second">
+                                <div class="card_image"> <img src="https://img.freepik.com/vetores-gratis/modelo-de-plano-de-fundo-escuro-laptop-vista-superior_52683-7083.jpg?w=996&t=st=1699893602~exp=1699894202~hmac=53576c11f66a04175e81f2630fa5a22079023ab6b87e294760929e91d42ab77f" /> </div>
+                                <div class="card_title title-white">
+                                  <p>One<br>Second</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item d-none">
+                            <div class="card_nav" id="grafica-matriz-ten-second">
+                                <div class="card_image"> <img src="https://img.freepik.com/vetores-gratis/modelo-de-plano-de-fundo-escuro-laptop-vista-superior_52683-7081.jpg?w=740&t=st=1699899743~exp=1699900343~hmac=1afb5c0a67c34807a5b3a864afa0332021a259118ca0f2ec0891f5f7720df328" /> </div>
+                                <div class="card_title title-white">
+                                  <p>Ten<br>Seconds</p>
                                 </div>
                             </div>
                         </li>
@@ -40,7 +56,7 @@
                             <div class="card_nav" id="grafica-week">
                                 <div class="card_image"> <img src="https://pixelplex.io/wp-content/uploads/2023/04/digital-transformation-challenges-main-1600.jpg" /> </div>
                                 <div class="card_title title-white">
-                                  <p>Week</p>
+                                  <p>Historic<br>Graph</p>
                                 </div>
                             </div>
                         </li>
@@ -74,7 +90,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Grafica Semanal</h5>
+                    <h5 class="modal-title"></h5>
                 </div>
                 <div class="modal-body">
                     <div class="d-flex justify-content-center spinner-container d-none">
@@ -94,6 +110,38 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade bd-example-modal-lg-two" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center spinner-container d-none">
+                        <div class="spinner-border" role="status">
+                          <span class="sr-only"></span>
+                        </div>
+                    </div>
+                    <div id="matrizOneSecond1" style="width: 90%; margin: 0 auto;"></div>
+                    <div id="matrizOneSecond2" style="width: 90%; margin: 0 auto;"></div>
+                    <div id="matrizOneSecond3" style="width: 90%; margin: 0 auto;"></div>
+                    <div class="container d-flex justify-content-center align-items-center" style="">
+                        <p class="text-lowercase">Ppm </p>
+                        <img src="{{ url_for('static', filename='img/Escala.png') }}" alt="Pmm" class="img-fluid">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close-modal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
     
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

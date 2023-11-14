@@ -9,14 +9,14 @@ const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -5 * 3600;
 const int daylightOffset_sec = 0;
 
-const char* apiUrl = "http://18.226.17.126:8000/regitro_co";
+const char* apiUrl = "http://18.191.202.133:8000/regitro_co";
 const char* authToken = "4e48262be313e199f0f1de08e64a4c068bd3635a6b9683572ac1ee2a4f13dcc7";
 
-const char* SSID = "Wokwi-GUEST";
-const char* PWD = "";
+const char* SSID = "IntegralXYZ";
+const char* PWD = "20192020";
 #define MQ7pin 32
-float sensorValue; 
-float gasConcentration; 
+float sensorValue; // variable to store sensor value
+float gasConcentration; // variable to store calculated gas concentration
 
 class wifi_controller {
   private:
@@ -53,8 +53,9 @@ void setup() {
 
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   struct tm timeinfo;
-  if (getLocalTime(&timeinfo)) {
+  delay(3000);
 
+  if (getLocalTime(&timeinfo)) {
     int year = timeinfo.tm_year + 1900;
     int month = timeinfo.tm_mon + 1;
     int day = timeinfo.tm_mday;
@@ -62,25 +63,27 @@ void setup() {
     int minute = timeinfo.tm_min;
     int second = timeinfo.tm_sec;
 
+    Serial.println(year);
+    Serial.println(month);
+    
+
     rtc.setTime(second, minute, hour, day, month, year);
   }
   else {
-    rtc.setTime(0, 25, 4, 6, 10, 2023);
+    rtc.setTime(0, 01, 8, 14, 11, 2023);
   }
 }
 
 void loop() {
-
-
   String formattedDate = rtc.getTime("%Y-%m-%d");
   String formattedTime = rtc.getTime("%H:%M:%S");
   Serial.println(formattedDate);
   Serial.println(formattedTime);
 
+
   // Lectura del sensor MQ7
   sensorValue = analogRead(MQ7pin);
   gasConcentration = map(sensorValue, 0, 4095, 20, 2000);
-
 
   Serial.println("Gas Concentration: " + String(gasConcentration) + " ppm");
 
@@ -89,7 +92,7 @@ void loop() {
   http.addHeader("Content-Type", "application/json");
   http.addHeader("Authorization", "Bearer " + String(authToken));
 
-  String jsonPayload = "{\"sensor\":\"mq7_sensor01\",\"hora\":\"" + String(formattedTime) + "\",\"fecha\":\"" + String(formattedDate) + "\",\"valor\":" + String(gasConcentration) + ",\"usuario\":\"ESP1\",\"codigo\":\"01\",\"prueba\":true}";
+  String jsonPayload = "{\"sensor\":\"mq7_sensor02\",\"hora\":\"" + String(formattedTime) + "\",\"fecha\":\"" + String(formattedDate) + "\",\"valor\":" + String(gasConcentration) + ",\"usuario\":\"ESP2\",\"codigo\":\"02\",\"prueba\":true}";
   int httpResponseCode = http.POST(jsonPayload);
 
   if (httpResponseCode > 0) {
@@ -100,5 +103,5 @@ void loop() {
   }
 
   http.end();
-  delay(3000);
+  delay(50);
 }
