@@ -1,40 +1,37 @@
-# Signals-Systems
-ESP32 || Python || Arduino || Rest API || MQ-7
+# 🛰️ Signals-Systems – Monitoreo de Monóxido de Carbono en Tiempo Real
 
-## Instalación
-1. Clonar el proyecto desde el repo de Github.
-```shell
-git clone https://github.com/JHONATAN9A/Signals-Systems.git
-```
-**!Importante:** Para correr el proeycto debemos tener instalado `Python 3` y `pip` en el sistema.
+Proyecto de IoT enfocado en la recolección, análisis y visualización de datos ambientales (específicamente monóxido de carbono) usando sensores MQ-7, con comunicación a través de una ESP32. El sistema cuenta con una API REST desarrollada en Flask, desplegada en AWS, que permite el almacenamiento en una base de datos PostgreSQL y visualización de los datos en una página web en tiempo real.
 
-2. Intalar las librerias requeridas para el proyecto. Para realizar este paso debes estar en la raíz del proyecto y luego ejecutar el comando: 
+## ⚙️ Tecnologías Utilizadas
 
-```shell
-pip install -r requirements.txt
-```
+- ESP32: Recolecta datos desde sensores MQ-7 y los envía en tiempo real vía HTTP.
+- MQ-7: Sensor para detección de monóxido de carbono (CO).
+- Flask (Python): Framework web para construir la API REST y renderizar la interfaz web.
+- PostgreSQL: Base de datos relacional para almacenar las lecturas recibidas.
+- AWS EC2: Servidor en la nube que hospeda la API y la interfaz.
+- Seguridad: El sistema implementa medidas básicas de autenticación y protección de los endpoints.
 
-## Ejecución
+## 🔍 Funcionalidad Principal
 
-1. En la raíz de proyecto ingresar a la carpeta `Python`.
+- Monitoreo de tres sensores MQ-7 conectados a una ESP32.
+- Envío de datos en tiempo real a un endpoint Flask expuesto públicamente en AWS.
+- Almacenamiento persistente en PostgreSQL.
+- Visualización en tiempo real desde una interfaz web desarrollada también en Flask.
+- Capa de seguridad para restringir acceso no autorizado a la API.
 
-```shell
-cd Python
-```
-**!Importante:** Los siguientes pasos se deben ejecutar en simultaneo y en el presente orden. Se recomienda ejecutar cada comando en consola diferente. 
+## 🔐 Seguridad
 
-2. Inciar el servidor de imagenes.
+El sistema incluye una capa básica de seguridad para la API, que puede ser extendida con autenticación JWT, tokens de acceso o control de IPs en producción.
 
-```shell
-python server_img.py
-```
+## 📈 Aplicaciones
 
-3. Inciar el servidor de la aplicación. 
-```shell
-python app.py
-```
+Este sistema puede ser usado para:
 
-4. Copiar y pegar la url en el navegador de preferencia. 
-```shell
-http://127.0.0.1:8050/
-```
+- Monitoreo ambiental en espacios cerrados (garajes, cocinas, fábricas).
+- Alerta temprana ante presencia de gases tóxicos.
+- Recolección de datos para análisis histórico o integración con sistemas más grandes de gestión ambiental.
+
+## 📌 Notas Adicionales
+
+- El endpoint de Flask debe estar accesible públicamente para que la ESP32 pueda enviar los datos.
+- Se recomienda usar HTTPS y autenticación cuando se despliegue el sistema en producción.
